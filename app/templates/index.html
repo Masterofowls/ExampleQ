@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Студенческий Портал{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">
+                <i class="fas fa-graduation-cap"></i> Добро пожаловать в Студенческий Портал
+            </h1>
+            <p class="lead text-muted">
+                Система управления студенческими группами, постами и объявлениями
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Для студентов</h5>
+                        <p class="card-text">
+                            Получайте актуальную информацию о вашей группе, 
+                            читайте объявления и следите за новостями.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Войти как студент
+                            </a>
+                            <a href="{{ url_for('auth.register_student') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-user-plus"></i> Зарегистрироваться
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-shield fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Для администраторов</h5>
+                        <p class="card-text">
+                            Управляйте группами, создавайте посты и объявления, 
+                            контролируйте информационный поток.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-success">
+                                <i class="fas fa-sign-in-alt"></i> Войти как администратор
+                            </a>
+                            <a href="{{ url_for('auth.register_admin') }}" class="btn btn-outline-success">
+                                <i class="fas fa-user-plus"></i> Регистрация администратора
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle"></i> Возможности системы
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-users text-primary"></i> Управление группами</h6>
+                                <p class="text-muted">Создание и управление студенческими группами по курсам и городам.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-bullhorn text-success"></i> Публикация постов</h6>
+                                <p class="text-muted">Создание и публикация объявлений для конкретных групп или всех студентов.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-shield-alt text-warning"></i> Безопасность</h6>
+                                <p class="text-muted">Надежная система аутентификации и авторизации пользователей.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cogs"></i> Техническая информация
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Технологии:</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fab fa-python text-primary"></i> Python Flask</li>
+                                    <li><i class="fas fa-database text-success"></i> MySQL + SQLAlchemy</li>
+                                    <li><i class="fab fa-bootstrap text-info"></i> Bootstrap 5</li>
+                                    <li><i class="fab fa-js text-warning"></i> JavaScript</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Функции:</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Аутентификация пользователей</li>
+                                    <li><i class="fas fa-check text-success"></i> Управление группами</li>
+                                    <li><i class="fas fa-check text-success"></i> Создание постов</li>
+                                    <li><i class="fas fa-check text-success"></i> API для тестирования</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

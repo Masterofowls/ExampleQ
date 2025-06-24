@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора - Студенческий Портал{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-tachometer-alt"></i> Панель администратора
+            </h2>
+            <div class="text-muted">
+                Добро пожаловать, <strong>{{ current_user.login }}</strong>!
+                <br><small>Роль: Администратор</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ posts|length }}</h4>
+                        <small>Всего постов</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-file-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ groups|length }}</h4>
+                        <small>Групп</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ students|length }}</h4>
+                        <small>Студентов</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-user-graduate fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ posts|selectattr('status', 'equalto', 'published')|list|length }}</h4>
+                        <small>Опубликовано</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Быстрые действия -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt"></i> Быстрые действия
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('admin.create_post') }}" class="btn btn-primary btn-lg w-100 mb-2">
+                            <i class="fas fa-plus"></i> Создать пост
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('admin.create_group') }}" class="btn btn-success btn-lg w-100 mb-2">
+                            <i class="fas fa-users"></i> Создать группу
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('admin.posts') }}" class="btn btn-info btn-lg w-100 mb-2">
+                            <i class="fas fa-list"></i> Управление постами
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Последние посты -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-file-alt"></i> Последние посты
+                </h5>
+                <a href="{{ url_for('admin.posts') }}" class="btn btn-sm btn-outline-primary">
+                    Все посты
+                </a>
+            </div>
+            <div class="card-body">
+                {% if posts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Заголовок</th>
+                                    <th>Статус</th>
+                                    <th>Группы</th>
+                                    <th>Дата</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for post in posts[:5] %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ post.title }}</strong>
+                                        <br><small class="text-muted">{{ post.content[:50] }}...</small>
+                                    </td>
+                                    <td>
+                                        {% if post.status == 'published' %}
+                                            <span class="badge bg-success">Опубликован</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Черновик</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% for group in post.groups[:2] %}
+                                            <span class="badge bg-info">{{ group.name }}</span>
+                                        {% endfor %}
+                                        {% if post.groups|length > 2 %}
+                                            <span class="badge bg-secondary">+{{ post.groups|length - 2 }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small>{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('admin.edit_post', post_id=post.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Нет постов</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Группы -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-users"></i> Группы
+                </h5>
+                <a href="{{ url_for('admin.groups') }}" class="btn btn-sm btn-outline-success">
+                    Все группы
+                </a>
+            </div>
+            <div class="card-body">
+                {% if groups %}
+                    {% for group in groups[:5] %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>{{ group.name }}</strong>
+                                <br><small class="text-muted">{{ group.course }} ({{ group.city }})</small>
+                            </div>
+                            <span class="badge bg-primary">{{ group.students|length }} студентов</span>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Нет групп</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- API информация -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-code"></i> API для разработчиков
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Получение данных:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>GET /api/posts</code> - Все посты</li>
+                            <li><code>GET /api/groups</code> - Все группы</li>
+                            <li><code>GET /api/students</code> - Все студенты</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Примеры curl:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>curl /api/posts</code></li>
+                            <li><code>curl /api/groups</code></li>
+                            <li><code>curl /api/students</code></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Тестирование:</h6>
+                        <p class="mb-2">
+                            <a href="{{ url_for('main.api_posts') }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt"></i> Тест API постов
+                            </a>
+                        </p>
+                        <p class="mb-2">
+                            <a href="{{ url_for('main.api_groups') }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-external-link-alt"></i> Тест API групп
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

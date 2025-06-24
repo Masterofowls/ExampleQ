@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Вход в систему - Студенческий Портал{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-sign-in-alt"></i> Вход в систему
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.login.label(class="form-label") }}
+                        {{ form.login(class="form-control" + (" is-invalid" if form.login.errors else ""), placeholder="Введите ваш логин") }}
+                        {% if form.login.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.login.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Введите ваш пароль") }}
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">
+                    Нет аккаунта? 
+                    <a href="{{ url_for('auth.register_student') }}" class="text-decoration-none">Зарегистрироваться как студент</a>
+                    или
+                    <a href="{{ url_for('auth.register_admin') }}" class="text-decoration-none">как администратор</a>
+                </small>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                <i class="fas fa-arrow-left"></i> Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

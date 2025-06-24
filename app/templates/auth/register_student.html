@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация студента - Студенческий Портал{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-graduate"></i> Регистрация студента
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.register_student') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.login.label(class="form-label") }}
+                        {{ form.login(class="form-control" + (" is-invalid" if form.login.errors else ""), placeholder="Введите логин") }}
+                        {% if form.login.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.login.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Введите пароль") }}
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.confirm_password.label(class="form-label") }}
+                        {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Подтвердите пароль") }}
+                        {% if form.confirm_password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.group_id.label(class="form-label") }}
+                        {{ form.group_id(class="form-select" + (" is-invalid" if form.group_id.errors else "")) }}
+                        {% if form.group_id.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.group_id.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">
+                    Уже есть аккаунт? 
+                    <a href="{{ url_for('auth.login') }}" class="text-decoration-none">Войти в систему</a>
+                </small>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{{ url_for('main.index') }}" class="text-decoration-none">
+                <i class="fas fa-arrow-left"></i> Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
