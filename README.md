@@ -1,7 +1,5 @@
 
 
-## 🛠 Технологии
-
 - **Backend**: Python Flask
 - **База данных**: MySQL + SQLAlchemy ORM
 - **Frontend**: Bootstrap 5, Font Awesome
