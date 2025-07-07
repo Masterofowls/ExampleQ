@@ -20,6 +20,7 @@
     "node": ">=14"
   },
   "dependencies": {
+    "heroku": "^8.7.1",
     "vercel": "^44.2.12"
   }
 }

@@ -58,3 +58,21 @@ Thumbs.db
 
 # Logs
 *.log
+*.out
+*.pid
+
+
+# Temporary files
+
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+
+/node-modules/
+npm-debug.log*
+
+node-modules/
+yarn-debug.log*
+/node_modules
