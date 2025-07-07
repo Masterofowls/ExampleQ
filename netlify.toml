@@ -1,12 +1,12 @@
 [build]
   command = "pip install -r requirements.txt"
-  publish = "dist"
+  publish = "."
 
 [build.environment]
   PYTHON_VERSION = "3.11"
 
+# Try using a simple redirect to the Python app
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/app"
+  to = "/wsgi.py"
   status = 200
-  force = true

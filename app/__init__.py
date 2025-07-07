@@ -18,6 +18,7 @@ def create_app():
     
     # Определяем среду выполнения
     is_vercel = os.getenv('VERCEL') == '1'
+    is_heroku = os.getenv('DYNO') is not None
     is_netlify = os.getenv('NETLIFY') == 'true' or os.getenv('AWS_LAMBDA_FUNCTION_NAME') is not None
     
     # Конфигурация приложения
@@ -27,6 +28,13 @@ def create_app():
     if is_vercel:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/student_portal.db'
         app.instance_path = '/tmp'
+    elif is_heroku:
+        # Heroku предоставляет DATABASE_URL для PostgreSQL
+        database_url = os.getenv('DATABASE_URL')
+        if database_url and database_url.startswith('postgres://'):
+            # Heroku использует postgres://, но SQLAlchemy требует postgresql://
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:////tmp/student_portal.db'
     elif is_netlify:
         # Для Netlify используем временную директорию
         import tempfile
