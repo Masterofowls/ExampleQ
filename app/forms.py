@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, SelectMultipleField, SelectField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from app.models import Student, Admin
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
+from app.models import Admin
 
-class LoginForm(FlaskForm):
-    """Форма входа в систему"""
+class AdminLoginForm(FlaskForm):
+    """Форма входа администратора в систему"""
     login = StringField('Логин', validators=[
         DataRequired(message='Логин обязателен'),
         Length(min=3, max=50, message='Логин должен быть от 3 до 50 символов')
@@ -13,29 +13,47 @@ class LoginForm(FlaskForm):
         DataRequired(message='Пароль обязателен'),
         Length(min=6, message='Пароль должен быть не менее 6 символов')
     ])
-    submit = SubmitField('Войти')
+    submit = SubmitField('Войти как администратор')
 
-class StudentRegistrationForm(FlaskForm):
-    """Форма регистрации студента"""
-    login = StringField('Логин', validators=[
-        DataRequired(message='Логин обязателен'),
-        Length(min=3, max=50, message='Логин должен быть от 3 до 50 символов')
-    ])
-    password = PasswordField('Пароль', validators=[
-        DataRequired(message='Пароль обязателен'),
-        Length(min=6, message='Пароль должен быть не менее 6 символов')
-    ])
-    confirm_password = PasswordField('Подтвердите пароль', validators=[
-        DataRequired(message='Подтверждение пароля обязательно'),
-        EqualTo('password', message='Пароли должны совпадать')
-    ])
-    submit = SubmitField('Зарегистрироваться')
+class StudentLoginForm(FlaskForm):
+    """Форма входа студента через выбор группы"""
+    city = SelectField('Город', choices=[
+        ('', 'Выберите город'),
+        ('Москва', 'Москва'),
+        ('Санкт-Петербург', 'Санкт-Петербург'),
+        ('Казань', 'Казань'),
+        ('Екатеринбург', 'Екатеринбург'),
+        ('Новосибирск', 'Новосибирск'),
+        ('Нижний Новгород', 'Нижний Новгород'),
+        ('Ростов-на-Дону', 'Ростов-на-Дону'),
+        ('Краснодар', 'Краснодар'),
+        ('Самара', 'Самара'),
+        ('Уфа', 'Уфа'),
+        ('Красноярск', 'Красноярск')
+    ], validators=[DataRequired(message='Выберите город')])
     
-    def validate_login(self, field):
-        """Проверка уникальности логина"""
-        student = Student.query.filter_by(login=field.data).first()
-        if student:
-            raise ValidationError('Этот логин уже занят. Выберите другой.')
+    course = SelectField('Курс', choices=[
+        ('', 'Выберите курс'),
+        ('1', '1 курс'),
+        ('2', '2 курс'),
+        ('3', '3 курс')
+    ], validators=[DataRequired(message='Выберите курс')])
+    
+    group = StringField('Группа', validators=[DataRequired(message='Выберите группу')])
+    
+    submit = SubmitField('Войти как студент')
+    
+    def validate_group(self, field):
+        """Проверяем, что выбранная группа существует"""
+        from app.models import Group
+        if field.data:
+            try:
+                group_id = int(field.data)
+                group = Group.query.get(group_id)
+                if not group:
+                    raise ValidationError('Выбранная группа не найдена')
+            except (ValueError, TypeError):
+                raise ValidationError('Неверный ID группы')
 
 class AdminRegistrationForm(FlaskForm):
     """Форма регистрации администратора"""
@@ -92,12 +110,24 @@ class GroupForm(FlaskForm):
         DataRequired(message='Название группы обязательно'),
         Length(min=2, max=100, message='Название должно быть от 2 до 100 символов')
     ])
-    course = StringField('Курс', validators=[
-        DataRequired(message='Курс обязателен'),
-        Length(min=2, max=50, message='Название курса должно быть от 2 до 50 символов')
-    ])
-    city = StringField('Город', validators=[
-        DataRequired(message='Город обязателен'),
-        Length(min=2, max=50, message='Название города должно быть от 2 до 50 символов')
-    ])
+    course = SelectField('Курс', choices=[
+        ('1', '1 курс'),
+        ('2', '2 курс'),
+        ('3', '3 курс')
+    ], validators=[DataRequired(message='Выберите курс')])
+    
+    city = SelectField('Город', choices=[
+        ('Москва', 'Москва'),
+        ('Санкт-Петербург', 'Санкт-Петербург'),
+        ('Казань', 'Казань'),
+        ('Екатеринбург', 'Екатеринбург'),
+        ('Новосибирск', 'Новосибирск'),
+        ('Нижний Новгород', 'Нижний Новгород'),
+        ('Ростов-на-Дону', 'Ростов-на-Дону'),
+        ('Краснодар', 'Краснодар'),
+        ('Самара', 'Самара'),
+        ('Уфа', 'Уфа'),
+        ('Красноярск', 'Красноярск')
+    ], validators=[DataRequired(message='Выберите город')])
+    
     submit = SubmitField('Сохранить') 

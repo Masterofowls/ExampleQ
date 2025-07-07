@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Вход студента - Студенческий Портал{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card">
+            <div class="card-header text-center bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-graduation-cap"></i> Выберите свою группу
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.login_student') }}" id="studentForm">
+                    
+                    <div class="mb-3">
+                        {{ form.city.label(class="form-label") }}
+                        {{ form.city(class="form-control" + (" is-invalid" if form.city.errors else ""), id="citySelect") }}
+                        {% if form.city.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.city.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.course.label(class="form-label") }}
+                        {{ form.course(class="form-control" + (" is-invalid" if form.course.errors else ""), id="courseSelect") }}
+                        {% if form.course.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.course.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.group.label(class="form-label") }}
+                        {{ form.group(type="hidden", id="groupField") }}
+                        <select class="form-control" id="groupSelect" required>
+                            <option value="">Сначала выберите город и курс</option>
+                        </select>
+                        {% if form.group.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.group.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid mb-3">
+                        {{ form.submit(class="btn btn-success", id="submitBtn", disabled=True) }}
+                    </div>
+                </form>
+                
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Примечание:</strong> Данные студентов не сохраняются в базе данных. 
+                        Вход осуществляется только через выбор группы для просмотра материалов.
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">
+                    <a href="{{ url_for('auth.login') }}" class="text-decoration-none">
+                        <i class="fas fa-arrow-left"></i> Назад к выбору входа
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const citySelect = document.getElementById('citySelect');
+    const courseSelect = document.getElementById('courseSelect');
+    const groupSelect = document.getElementById('groupSelect');
+    const groupField = document.getElementById('groupField');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    function updateGroups() {
+        const city = citySelect.value;
+        const course = courseSelect.value;
+        
+        console.log('Updating groups for city:', city, 'course:', course);
+        
+        if (city && course) {
+            const url = `/api/get_groups?city=${encodeURIComponent(city)}&course=${encodeURIComponent(course)}`;
+            console.log('Fetching from URL:', url);
+            
+            fetch(url)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(groups => {
+                    console.log('Received groups:', groups);
+                    groupSelect.innerHTML = '<option value="">Выберите группу</option>';
+                    groups.forEach(group => {
+                        const option = document.createElement('option');
+                        option.value = group.id;
+                        option.textContent = group.name;
+                        groupSelect.appendChild(option);
+                    });
+                    groupSelect.disabled = false;
+                    groupField.value = ''; // Reset hidden field
+                    checkForm();
+                })
+                .catch(error => {
+                    console.error('Ошибка загрузки групп:', error);
+                    groupSelect.innerHTML = '<option value="">Ошибка загрузки групп</option>';
+                    groupSelect.disabled = true;
+                    groupField.value = '';
+                });
+        } else {
+            groupSelect.innerHTML = '<option value="">Сначала выберите город и курс</option>';
+            groupSelect.disabled = true;
+            groupField.value = '';
+            submitBtn.disabled = true;
+        }
+    }
+    
+    function checkForm() {
+        const isFormValid = citySelect.value && courseSelect.value && groupField.value;
+        submitBtn.disabled = !isFormValid;
+    }
+    
+    // Update hidden field when group is selected
+    groupSelect.addEventListener('change', function() {
+        groupField.value = this.value;
+        checkForm();
+    });
+    
+    citySelect.addEventListener('change', updateGroups);
+    courseSelect.addEventListener('change', updateGroups);
+});
+</script>
+{% endblock %}

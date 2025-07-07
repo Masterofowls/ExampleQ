@@ -3,33 +3,21 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-class Student(db.Model, UserMixin):
-    """Модель студента"""
-    __tablename__ = 'students'
+class SessionStudent(UserMixin):
+    """Класс для студентов в сессии (не сохраняется в БД)"""
     
-    id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(50), unique=True, nullable=False)
-    password_hash = db.Column(db.String(100), nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Связи
-    group = db.relationship('Group', back_populates='students')
+    def __init__(self, group_id, group_name):
+        self.id = f"student_{group_id}"
+        self.group_id = group_id
+        self.group_name = group_name
+        self.user_type = 'student'
     
     def get_id(self):
         """Возвращает уникальный ID для Flask-Login"""
-        return f"student_{self.id}"
-    
-    def set_password(self, password):
-        """Установка хешированного пароля"""
-        self.password_hash = generate_password_hash(password)
-    
-    def check_password(self, password):
-        """Проверка пароля"""
-        return check_password_hash(self.password_hash, password)
+        return self.id
     
     def __repr__(self):
-        return f'<Student {self.login}>'
+        return f'<SessionStudent group={self.group_name}>'
 
 class Admin(db.Model, UserMixin):
     """Модель администратора"""
@@ -63,17 +51,16 @@ class Group(db.Model):
     __tablename__ = 'groups'
     
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    course = db.Column(db.String(50), nullable=False)
-    city = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(100), nullable=False)  # Например: ИСИП23, ИСИП22
+    course = db.Column(db.Integer, nullable=False)  # 1, 2, 3
+    city = db.Column(db.String(50), nullable=False)  # Москва, Санкт-Петербург, Казань
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Связи
-    students = db.relationship('Student', back_populates='group')
     posts = db.relationship('Post', secondary='group_posts', back_populates='groups')
     
     def __repr__(self):
-        return f'<Group {self.name}>'
+        return f'<Group {self.name} - {self.course} курс, {self.city}>'
 
 class Post(db.Model):
     """Модель поста"""

@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/index.py"
+    }
+  ],
+  "env": {
+    "SECRET_KEY": "production-secret-key-change-this-in-deployment",
+    "DATABASE_URL": "sqlite:////tmp/student_portal.db",
+    "FLASK_ENV": "production",
+    "VERCEL": "1"
+  }
+}

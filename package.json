@@ -1,0 +1,25 @@
+{
+  "name": "student-portal",
+  "version": "1.0.0",
+  "description": "Студенческий портал на Flask",
+  "main": "api/index.py",
+  "scripts": {
+    "dev": "python test_vercel.py",
+    "test": "python -m pytest",
+    "vercel-build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "flask",
+    "python",
+    "student-portal",
+    "education"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "vercel": "^44.2.12"
+  }
+}

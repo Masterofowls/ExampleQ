@@ -10,9 +10,9 @@
                 <i class="fas fa-tachometer-alt"></i> Панель управления
             </h2>
             <div class="text-muted">
-                Добро пожаловать, <strong>{{ current_user.login }}</strong>!
+                Добро пожаловать, студент!
                 {% if user_group %}
-                    <br><small>Группа: {{ user_group.name }} ({{ user_group.course }}, {{ user_group.city }})</small>
+                    <br><small>Группа: {{ user_group.name }} ({{ user_group.course }} курс, {{ user_group.city }})</small>
                 {% endif %}
             </div>
         </div>
@@ -56,8 +56,8 @@
                 </h5>
             </div>
             <div class="card-body">
-                {% if user_posts %}
-                    {% for post in user_posts %}
+                {% if group_posts %}
+                    {% for post in group_posts %}
                         <div class="border-bottom pb-3 mb-3">
                             <h6 class="card-title">{{ post.title }}</h6>
                             <p class="card-text text-muted">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
